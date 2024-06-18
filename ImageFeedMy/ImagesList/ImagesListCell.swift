@@ -13,7 +13,7 @@ final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = Constants.Other.reuseIdentifier
     
     //MARK: - Public UI elements
-    lazy var cellImage: UIImageView = {
+    private lazy var cellImage: UIImageView = {
         let cellImage = UIImageView()
         cellImage.translatesAutoresizingMaskIntoConstraints = false
         cellImage.contentMode = .scaleAspectFill
@@ -22,13 +22,13 @@ final class ImagesListCell: UITableViewCell {
         return cellImage
     }()
     
-    lazy var likeButton: UIButton = {
+    private lazy var likeButton: UIButton = {
         let likeButton = UIButton()
         likeButton.translatesAutoresizingMaskIntoConstraints = false
         return likeButton
     }()
     
-    lazy var dateLabel: UILabel = {
+    private lazy var dateLabel: UILabel = {
         let datelabel = UILabel()
         datelabel.translatesAutoresizingMaskIntoConstraints = false
         datelabel.font = UIFont.systemFont(ofSize: 13)
@@ -62,26 +62,11 @@ final class ImagesListCell: UITableViewCell {
         cellImage.addSubview(likeButton)
         cellImage.addSubview(gradientView)
         gradientView.addSubview(dateLabel)
-        NSLayoutConstraint.activate([
-            cellImage.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 4),
-            cellImage.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -4),
-            cellImage.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            cellImage.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            likeButton.topAnchor.constraint(equalTo: cellImage.topAnchor),
-            likeButton.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor),
-            likeButton.widthAnchor.constraint(equalToConstant: 44),
-            likeButton.heightAnchor.constraint(equalToConstant: 44),
-            gradientView.bottomAnchor.constraint(equalTo: cellImage.bottomAnchor),
-            gradientView.leadingAnchor.constraint(equalTo: cellImage.leadingAnchor),
-            gradientView.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor),
-            gradientView.heightAnchor.constraint(equalToConstant: 30),
-            dateLabel.bottomAnchor.constraint(equalTo: gradientView.bottomAnchor, constant: -8),
-            dateLabel.leadingAnchor.constraint(equalTo: gradientView.leadingAnchor, constant: 8),
-            dateLabel.trailingAnchor.constraint(lessThanOrEqualTo: gradientView.trailingAnchor, constant: -8),
-        ])
+        setupConstraint()
     }
 
     required init?(coder: NSCoder) {
+        //TODO: Избавиться от строки
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -89,5 +74,39 @@ final class ImagesListCell: UITableViewCell {
         super.layoutSublayers(of: layer)
         gradientLayer.frame = gradientView.bounds
         gradientView.layer.addSublayer(gradientLayer)
+    }
+    
+    private func setupConstraint() {
+        NSLayoutConstraint.activate([
+            cellImage.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 4),
+            cellImage.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -4),
+            cellImage.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            cellImage.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            
+            likeButton.topAnchor.constraint(equalTo: cellImage.topAnchor),
+            likeButton.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor),
+            likeButton.widthAnchor.constraint(equalToConstant: 44),
+            likeButton.heightAnchor.constraint(equalToConstant: 44),
+            
+            gradientView.bottomAnchor.constraint(equalTo: cellImage.bottomAnchor),
+            gradientView.leadingAnchor.constraint(equalTo: cellImage.leadingAnchor),
+            gradientView.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor),
+            gradientView.heightAnchor.constraint(equalToConstant: 30),
+            
+            dateLabel.bottomAnchor.constraint(equalTo: gradientView.bottomAnchor, constant: -8),
+            dateLabel.leadingAnchor.constraint(equalTo: gradientView.leadingAnchor, constant: 8),
+            dateLabel.trailingAnchor.constraint(lessThanOrEqualTo: gradientView.trailingAnchor, constant: -8),
+        ])
+    }
+
+    func configCell(for model: ModelImageCell, with indexPath: IndexPath) {
+        guard let image = UIImage(named: model.photosName) else { return }
+        cellImage.image = image
+        dateLabel.text = model.dateText
+        if indexPath.row.isMultiple(of: 2) {
+            likeButton.setImage(UIImage(named: Constants.ImageNames.likeOn), for: .normal)
+        } else {
+            likeButton.setImage(UIImage(named: Constants.ImageNames.likeOff), for: .normal)
+        }
     }
 }
