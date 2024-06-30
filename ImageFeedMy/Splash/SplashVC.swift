@@ -20,6 +20,7 @@ final class SplashVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         splashPresenter = SplashPresenter(splashVC: self)
         view.addSubview(imageView)
         view.backgroundColor = .ypBlack

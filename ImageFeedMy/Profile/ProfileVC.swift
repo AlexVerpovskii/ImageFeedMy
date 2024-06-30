@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileVC: UIViewController {
     
@@ -93,11 +94,24 @@ final class ProfileVC: UIViewController {
         return baseStackView
     }()
     
+    private final var profileImageServiceObserver: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypBlack
         view.addSubview(baseStackView)
         setupConstraint()
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                updateAvatar()
+            }
+        updateAvatar()
+        updateProfileDetails()
     }
     
     private func setupConstraint() {
@@ -106,5 +120,21 @@ final class ProfileVC: UIViewController {
             baseStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             baseStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
+    }
+    
+    private func updateProfileDetails() {
+        guard let profile = ProfileService.shared.profile else { return }
+        fullNameLabel.text = profile.name
+        nickNameLabel.text = profile.loginName
+        greetingLabel.text = profile.bio
+    }
+    
+    private func updateAvatar() {
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
+        let processor = RoundCornerImageProcessor(cornerRadius: 70)
+        avatarImage.kf.setImage(with: url, options: [.processor(processor)])
     }
 }
