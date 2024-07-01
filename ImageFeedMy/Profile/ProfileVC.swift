@@ -110,7 +110,7 @@ final class ProfileVC: UIViewController {
                 guard let self = self else { return }
                 updateAvatar()
             }
-        updateAvatar()
+//        updateAvatar()
         updateProfileDetails()
     }
     

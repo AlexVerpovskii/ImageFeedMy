@@ -56,26 +56,44 @@ final class SplashPresenter {
     
     private func fetchProfile() {
         UIBlockingProgressHUD.show()
-        ProfileService.shared.fetchProfile { [weak self] result in
+        ImagesListService.shared.fetchPhotosNextPage { [weak self] result in
+            guard let self = self else { return }
             UIBlockingProgressHUD.dismiss()
-            guard let self else { return }
-            
             switch result {
-            case .success(let profile):
-                ProfileImageService.shared.fetchProfileImage(userName: profile.username) { [weak self] result in
-                    guard let self = self else { return }
-                    switch result {
-                    case .success(_):
-                        switchToTabBarController()
-                    case .failure(let error):
-                        print(error)
-                    }
-                }
+            case .success(_):
+                switchToTabBarController()
             case .failure(let error):
                 print(error)
-                break
             }
         }
+//        ProfileService.shared.fetchProfile { [weak self] result in
+//            UIBlockingProgressHUD.dismiss()
+//            guard let self else { return }
+//            
+//            switch result {
+//            case .success(let profile):
+//                ProfileImageService.shared.fetchProfileImage(userName: profile.username) { [weak self] result in
+//                    guard let self = self else { return }
+//                    switch result {
+//                    case .success(_):
+//                        ImagesListService.shared.fetchPhotosNextPage { [weak self] result in
+//                            guard let self = self else { return }
+//                            switch result {
+//                            case .success(_):
+//                                switchToTabBarController()
+//                            case .failure(let error):
+//                                print(error)
+//                            }
+//                        }
+//                    case .failure(let error):
+//                        print(error)
+//                    }
+//                }
+//            case .failure(let error):
+//                print(error)
+//                break
+//            }
+//        }
     }
 }
 

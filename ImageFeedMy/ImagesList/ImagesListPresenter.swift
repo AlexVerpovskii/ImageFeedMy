@@ -8,8 +8,9 @@
 import Foundation
 
 final class ImagesListPresenter {
+    private static let SERVICE_NAME = "ImagesListPresenter"
 
-    let photosName: [String] = Array(0..<20).map{ "\($0)"}
+    var photos: [Photo] = []
     
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -18,10 +19,18 @@ final class ImagesListPresenter {
         return dateFormatter
     }()
     
-    func converter(indexPath: IndexPath) -> ModelImageCell {
+    func imageConverter(indexPath: IndexPath) -> ModelImageCell {
         let dateText = dateFormatter.string(from: Date())
-        let photosName = photosName[indexPath.row]
+        let photosName = photos[indexPath.row].thumbImageURL
         
-        return ModelImageCell(photosName: photosName, dateText: dateText)
+        return ModelImageCell(photosUrl: photosName, dateText: dateText)
+    }
+    
+    func createLog(isError: Bool) {
+        if isError {
+            Log.createlog(log: LogModel(serviceName: ImagesListPresenter.SERVICE_NAME, message: "Ошибка при обработке запроса в методе willDisplay", systemError: nil, eventType: .error))
+        } else {
+            Log.createlog(log: LogModel(serviceName: ImagesListPresenter.SERVICE_NAME, message: "Получение фотографий новой страницы", systemError: nil, eventType: .info))
+        }
     }
 }

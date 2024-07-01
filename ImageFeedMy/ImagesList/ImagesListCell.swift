@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ImagesListCell: UITableViewCell {
     
@@ -76,6 +77,11 @@ final class ImagesListCell: UITableViewCell {
         gradientView.layer.addSublayer(gradientLayer)
     }
     
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cellImage.kf.cancelDownloadTask()
+    }
+    
     private func setupConstraint() {
         NSLayoutConstraint.activate([
             cellImage.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 4),
@@ -100,8 +106,7 @@ final class ImagesListCell: UITableViewCell {
     }
 
     func configCell(for model: ModelImageCell, with indexPath: IndexPath) {
-        guard let image = UIImage(named: model.photosName) else { return }
-        cellImage.image = image
+        cellImage.kf.setImage(with: URL(string: model.photosUrl))
         dateLabel.text = model.dateText
         if indexPath.row.isMultiple(of: 2) {
             likeButton.setImage(UIImage(named: Constants.ImageNames.likeOn), for: .normal)

@@ -6,25 +6,32 @@
 //
 
 import Foundation
+import Logging
 
-//TODO: Доработать в след спринте.
-enum LogEvent: String {
-   case e = "[‼️]" // error
-   case i = "[ℹ️]" // info
-   case d = "[💬]" // debug
-   case v = "[🔬]" // verbose
-   case w = "[⚠️]" // warning
-   case s = "[🔥]" // severe
+enum LogEvent {
+   case error
+   case info
 }
 
-class Log {
+struct LogModel {
+    var serviceName: String
+    var message: String
+    var systemError: String?
+    var eventType: LogEvent
+}
+
+final class Log {
     
-   static var dateFormat = "yyyy-MM-dd hh:mm:ssSSS" // Use your own
-   static var dateFormatter: DateFormatter {
-      let formatter = DateFormatter()
-      formatter.dateFormat = dateFormat
-      formatter.locale = Locale.current
-      formatter.timeZone = TimeZone.current
-      return formatter
+    static func createlog(log: LogModel) {
+        switch log.eventType {
+        case .error:
+            let logger = Logger(label: log.serviceName)
+            logger.error("\(log.message): \(log.systemError)")
+        case .info:
+            let logger = Logger(label: log.serviceName)
+            logger.info("\(log.message): \(log.systemError)")
+        }
     }
 }
+
+

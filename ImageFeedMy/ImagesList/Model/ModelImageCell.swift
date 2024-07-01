@@ -8,6 +8,6 @@
 import Foundation
 
 struct ModelImageCell {
-    var photosName: String
+    var photosUrl: String
     var dateText: String
 }
