@@ -20,7 +20,7 @@ final class SplashVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+//        OAuth2TokenStorage.shared.removeAllKeys()
         splashPresenter = SplashPresenter(splashVC: self)
         view.addSubview(imageView)
         view.backgroundColor = .ypBlack
