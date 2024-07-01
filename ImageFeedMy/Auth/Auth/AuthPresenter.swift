@@ -26,13 +26,16 @@ final class AuthPresenter {
 extension AuthPresenter: WebViewVCDelegate {
     
     func webViewVC(_ vc: WebViewVC, didAuthenticateWithCode code: String) {
+        UIBlockingProgressHUD.show()
         OAuth2Service.shared.fetchOAuthToken(code: code) { [weak self] result in
             guard let self else { return }
+            UIBlockingProgressHUD.dismiss()
             switch result {
             case .success(_):
                 guard let authVC else { return }
                 authVCDelegate.didAuthenticate(authVC)
             case .failure(let error):
+                authVC?.viewErrorAlert()
                 print(error)
             }
         }

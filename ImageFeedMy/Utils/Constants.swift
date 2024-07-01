@@ -39,12 +39,16 @@ enum Constants {
         static let accessScope = "public+read_user+write_likes"
         static let defaultBaseURL = URL(string: "https://api.unsplash.com")!
         static let host = "unsplash.com"
-        static let pathAuthorize = "/oauth/authorize"
+        static let pathAuthorize = "oauth/authorize"
         static let native = "/native"
         static let code = "code"
-        static let pathToken = "/oauth/token"
+        static let pathToken = "oauth/token"
         static let authorizationCode = "authorization_code"
-        
+        static let pathProfile = "me"
+        static let pathUsers = "users"
+        static let bearer = "Bearer"
+        static let authorization = "Authorization"
+        static let defaultApiUrl = "api.unsplash.com"
         enum QueryItem {
             static let clientId = "client_id"
             static let redirectUri = "redirect_uri"
@@ -55,19 +59,24 @@ enum Constants {
         }
     }
     
-    enum HTTPMethod {
-        static let post = "POST"
-        static let get = "GET"
+    enum HTTPMethod: String {
+        case post = "POST"
+        case get = "GET"
     }
     
-    enum Schema {
-        static let http = "http"
-        static let https = "https"
+    enum Schema: String {
+        case http = "http"
+        case https = "https"
     }
     
-    enum NetworkError: Error {  // 1
+    enum NetworkError: Error {
         case httpStatusCode(Int)
         case urlRequestError(Error)
+        case noUrlRequest
         case urlSessionError
+        
+        
+        case otherError(Error)
+        case invalidDecoder
     }
 }

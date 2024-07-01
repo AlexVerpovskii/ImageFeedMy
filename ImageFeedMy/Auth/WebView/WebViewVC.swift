@@ -27,6 +27,7 @@ final class WebViewVC: UIViewController {
     
     private final let webViewPresenter: WebViewProtocol = WebViewPresenter()
     private final var webViewVCDelegate: WebViewVCDelegate?
+    private final var estimatedProgressObservation: NSKeyValueObservation?
     
     init(webViewVCDelegate: WebViewVCDelegate) {
         super.init(nibName: nil, bundle: nil)
@@ -46,15 +47,13 @@ final class WebViewVC: UIViewController {
         navigationController?.navigationBar.standardAppearance.backgroundColor = .white
         setupConstraint()
         webView.load(webViewPresenter.loadAuth())
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        webView.addObserver(
-            self,
-            forKeyPath: #keyPath(WKWebView.estimatedProgress),
-            options: .new,
-            context: nil)
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+             options: [],
+             changeHandler: { [weak self] _, _ in
+                 guard let self else { return }
+                 updateProgress()
+             })
     }
     
     override func observeValue(
@@ -69,10 +68,6 @@ final class WebViewVC: UIViewController {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)    }
     
     private func setupConstraint() {
         NSLayoutConstraint.activate([

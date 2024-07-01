@@ -21,12 +21,12 @@ final class RootTabBarVC: UITabBarController {
         tabBar.standardAppearance = tabBarAppearance
         
         let profileVC = ProfileVC()
-        let defaultTabBarImageProfile = UIImage(named: Constants.ImageNames.tabBarImageLeft)
+        let defaultTabBarImageProfile = UIImage(named: Constants.ImageNames.tabBarImagRight)
         let profileBarItem = UITabBarItem(title: Constants.Other.empty, image: defaultTabBarImageProfile, tag: 1)
         profileVC.tabBarItem = profileBarItem
         
         let imageListVC = ImagesListVC()
-        let defaultTabBarIamgeImageList = UIImage(named: Constants.ImageNames.tabBarImagRight)
+        let defaultTabBarIamgeImageList = UIImage(named: Constants.ImageNames.tabBarImageLeft)
         let imageListBarItem = UITabBarItem(title: Constants.Other.empty, image: defaultTabBarIamgeImageList, tag: 0)
         imageListVC.tabBarItem = imageListBarItem
         

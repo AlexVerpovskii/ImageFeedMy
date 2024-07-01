@@ -51,6 +51,13 @@ final class AuthVC: UIViewController {
         authPresenter = AuthPresenter(authVCDelegate: authVCDelegate, authVC: self)
     }
     
+    func viewErrorAlert() {
+        let ac = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Ok", style: .cancel)
+        ac.addAction(action)
+        present(ac, animated: true)
+    }
+    
     private func setupConstraint() {
         NSLayoutConstraint.activate([
             logoImageView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),

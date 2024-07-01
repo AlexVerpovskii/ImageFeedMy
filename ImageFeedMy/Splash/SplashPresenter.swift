@@ -24,13 +24,13 @@ final class SplashPresenter {
         if !checkExistsToken() {
             splashVC?.present(configAuthVC(), animated: true)
         } else {
-            switchToTabBarController()
+            fetchProfile()
         }
     }
     
     private func checkExistsToken() -> Bool {
         let token = OAuth2TokenStorage.shared.token
-        return token.isEmpty ? false : true
+        return token != nil ? true : false
     }
     
     private func configAuthVC() -> UINavigationController {
@@ -53,13 +53,37 @@ final class SplashPresenter {
         let rootTabBarVC = RootTabBarVC()
         window.rootViewController = rootTabBarVC
     }
+    
+    private func fetchProfile() {
+        UIBlockingProgressHUD.show()
+        ProfileService.shared.fetchProfile { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            guard let self else { return }
+            
+            switch result {
+            case .success(let profile):
+                ProfileImageService.shared.fetchProfileImage(userName: profile.username) { [weak self] result in
+                    guard let self = self else { return }
+                    switch result {
+                    case .success(_):
+                        switchToTabBarController()
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
+            case .failure(let error):
+                print(error)
+                break
+            }
+        }
+    }
 }
 
 extension SplashPresenter: AuthViewControllerDelegate {
     func didAuthenticate(_ vc: AuthVC) {
         vc.dismiss(animated: true) { [weak self] in
             guard let self else { return }
-            self.switchToTabBarController()
+            fetchProfile()
         }
     }
 }
