@@ -30,7 +30,7 @@ final class SplashPresenter {
     
     private func checkExistsToken() -> Bool {
         let token = OAuth2TokenStorage.shared.token
-        return token != nil ? true : false
+        return token != nil
     }
     
     private func configAuthVC() -> UINavigationController {

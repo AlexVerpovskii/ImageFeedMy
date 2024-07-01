@@ -16,6 +16,6 @@ final class ProfileImageRequest: BaseRequestImpl {
     }
     
     override var host: String { Constants.Unsplash.defaultApiUrl}
-    override var endPoint: String { Constants.Unsplash.pathUsers + "/" + Constants.Unsplash.pathProfile }
+    override var endPoint: String { Constants.Unsplash.pathUsers + "/" + userName }
     override var token: String { OAuth2TokenStorage.shared.token ?? "" }
 }
