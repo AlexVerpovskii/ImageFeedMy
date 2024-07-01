@@ -35,7 +35,7 @@ extension AuthPresenter: WebViewVCDelegate {
                 guard let authVC else { return }
                 authVCDelegate.didAuthenticate(authVC)
             case .failure(let error):
-                authVC?.viewErrorAlert()
+                authVC?.showErrorAlert()
                 print(error)
             }
         }

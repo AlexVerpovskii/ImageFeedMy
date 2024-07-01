@@ -8,7 +8,7 @@
 import Foundation
 
 struct ProfileConverter {
-    static func converter(profileResult: ProfileResult) -> Profile {
+    static func convert(profileResult: ProfileResult) -> Profile {
         let name = "\(profileResult.firstName) \(profileResult.lastName)"
         return Profile(
             username: profileResult.username,

@@ -22,7 +22,7 @@ final class ProfileService {
             switch response {
             case .success(let data):
                 guard let data = data else { return }
-                profile = ProfileConverter.converter(profileResult: data)
+                profile = ProfileConverter.convert(profileResult: data)
                 completion(.success(data))
             case .failure(let error):
                 completion(.failure(Constants.NetworkError.otherError(error)))
