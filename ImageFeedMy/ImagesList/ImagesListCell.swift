@@ -13,6 +13,17 @@ final class ImagesListCell: UITableViewCell {
     //MARK: - Static properties
     static let reuseIdentifier = Constants.Other.reuseIdentifier
     
+    var photo: Photo?
+    
+    private lazy var customContentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .ypBlack
+        view.layer.cornerRadius = 16
+        view.clipsToBounds = true
+        return view
+    }()
+    
     //MARK: - Public UI elements
     private lazy var cellImage: UIImageView = {
         let cellImage = UIImageView()
@@ -26,6 +37,7 @@ final class ImagesListCell: UITableViewCell {
     private lazy var likeButton: UIButton = {
         let likeButton = UIButton()
         likeButton.translatesAutoresizingMaskIntoConstraints = false
+        likeButton.addTarget(self, action: #selector(like), for: .touchUpInside)
         return likeButton
     }()
     
@@ -54,28 +66,30 @@ final class ImagesListCell: UITableViewCell {
         return gradientLayer
     }()
     
-    //MARK: - Init
+    //    MARK: - Init
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         selectionStyle = .none
         backgroundColor = .ypBlack
-        addSubview(cellImage)
-        cellImage.addSubview(likeButton)
-        cellImage.addSubview(gradientView)
-        gradientView.addSubview(dateLabel)
-        setupConstraint()
     }
-
+    
     required init?(coder: NSCoder) {
         //TODO: Избавиться от строки
         fatalError("init(coder:) has not been implemented")
     }
-
-    override func layoutSublayers(of layer: CALayer) {
-        super.layoutSublayers(of: layer)
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.addSubview(customContentView)
+        customContentView.addSubview(cellImage)
+        customContentView.addSubview(likeButton)
+        customContentView.addSubview(dateLabel)
         gradientLayer.frame = gradientView.bounds
         gradientView.layer.addSublayer(gradientLayer)
+        customContentView.addSubview(gradientView)
+        setupConstraint()
     }
+    
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -84,34 +98,66 @@ final class ImagesListCell: UITableViewCell {
     
     private func setupConstraint() {
         NSLayoutConstraint.activate([
-            cellImage.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 4),
-            cellImage.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -4),
-            cellImage.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            cellImage.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            customContentView.topAnchor.constraint(equalTo: topAnchor),
+            customContentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            customContentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            customContentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8),
             
-            likeButton.topAnchor.constraint(equalTo: cellImage.topAnchor),
-            likeButton.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor),
+            cellImage.topAnchor.constraint(equalTo: customContentView.topAnchor),
+            cellImage.bottomAnchor.constraint(equalTo: customContentView.bottomAnchor),
+            cellImage.leadingAnchor.constraint(equalTo: customContentView.leadingAnchor),
+            cellImage.trailingAnchor.constraint(equalTo: customContentView.trailingAnchor),
+            
+            likeButton.topAnchor.constraint(equalTo: customContentView.topAnchor),
+            likeButton.trailingAnchor.constraint(equalTo: customContentView.trailingAnchor),
             likeButton.widthAnchor.constraint(equalToConstant: 44),
             likeButton.heightAnchor.constraint(equalToConstant: 44),
             
-            gradientView.bottomAnchor.constraint(equalTo: cellImage.bottomAnchor),
-            gradientView.leadingAnchor.constraint(equalTo: cellImage.leadingAnchor),
-            gradientView.trailingAnchor.constraint(equalTo: cellImage.trailingAnchor),
+            gradientView.bottomAnchor.constraint(equalTo: customContentView.bottomAnchor),
+            gradientView.leadingAnchor.constraint(equalTo: customContentView.leadingAnchor),
+            gradientView.trailingAnchor.constraint(equalTo: customContentView.trailingAnchor),
             gradientView.heightAnchor.constraint(equalToConstant: 30),
             
-            dateLabel.bottomAnchor.constraint(equalTo: gradientView.bottomAnchor, constant: -8),
-            dateLabel.leadingAnchor.constraint(equalTo: gradientView.leadingAnchor, constant: 8),
-            dateLabel.trailingAnchor.constraint(lessThanOrEqualTo: gradientView.trailingAnchor, constant: -8),
+            dateLabel.bottomAnchor.constraint(equalTo: customContentView.bottomAnchor, constant: -8),
+            dateLabel.leadingAnchor.constraint(equalTo: customContentView.leadingAnchor, constant: 8),
+            dateLabel.trailingAnchor.constraint(lessThanOrEqualTo: customContentView.trailingAnchor, constant: -8),
         ])
     }
-
+    
     func configCell(for model: ModelImageCell, with indexPath: IndexPath) {
         cellImage.kf.setImage(with: URL(string: model.photosUrl))
+        //        self.tag = indexPath.row
         dateLabel.text = model.dateText
-        if indexPath.row.isMultiple(of: 2) {
-            likeButton.setImage(UIImage(named: Constants.ImageNames.likeOn), for: .normal)
-        } else {
-            likeButton.setImage(UIImage(named: Constants.ImageNames.likeOff), for: .normal)
+        likeButton.setImage(UIImage(named: model.isLiked ? Constants.ImageNames.likeOn : Constants.ImageNames.likeOff ), for: .normal)
+    }
+    
+    //TODO: Создать презентер и вынести логику
+    @objc
+    private func like(_ sender: UIButton) {
+        guard var photo else { return }
+        UIBlockingProgressHUD.show()
+        //        let indexPathRow = sender.tag
+        //MARK: Стопер!
+        print(photo.isLiked)
+        LikeService.shared.fetchLike(liked: !photo.isLiked, photoId: photo.id) { [weak self] result in
+            guard let self else { return }
+            switch result {
+            case .success(let data):
+                UIBlockingProgressHUD.dismiss()
+                print(data.photo.likedByUser)
+                likeButton.setImage(UIImage(named: data.photo.likedByUser ? Constants.ImageNames.likeOn : Constants.ImageNames.likeOff ), for: .normal)
+                photo.isLiked = data.photo.likedByUser
+                ImagesListService.shared.fetchPhotosNextPage { result in
+                    switch result {
+                    case .success(_):
+                        print("sad")
+                    case .failure(_):
+                        print("sad")
+                    }
+                }
+            case .failure(_):
+                print("sad")
+            }
         }
     }
 }

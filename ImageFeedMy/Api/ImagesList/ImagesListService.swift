@@ -23,9 +23,7 @@ final class ImagesListService {
     func fetchPhotosNextPage(completion: @escaping (Swift.Result<[Photo], Error>) -> Void) {
         workItem?.cancel()
         let nextPage = (lastLoadedPage ?? 0) + 1
-        print(nextPage)
         let request = ImagesListRequest(page: String(nextPage))
-        workItem?.cancel()
         workItem = DispatchWorkItem { [weak self] in
             guard let self else { return }
             

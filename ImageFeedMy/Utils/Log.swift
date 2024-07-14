@@ -26,10 +26,10 @@ final class Log {
         switch log.eventType {
         case .error:
             let logger = Logger(label: log.serviceName)
-            logger.error("\(log.message): \(log.systemError)")
+            logger.error("\(log.message): \(String(describing: log.systemError))")
         case .info:
             let logger = Logger(label: log.serviceName)
-            logger.info("\(log.message): \(log.systemError)")
+            logger.info("\(log.message): \(String(describing: log.systemError))")
         }
     }
 }

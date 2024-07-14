@@ -110,7 +110,7 @@ final class ProfileVC: UIViewController {
                 guard let self = self else { return }
                 updateAvatar()
             }
-//        updateAvatar()
+        updateAvatar()
         updateProfileDetails()
     }
     
@@ -135,6 +135,7 @@ final class ProfileVC: UIViewController {
             let url = URL(string: profileImageURL)
         else { return }
         let processor = RoundCornerImageProcessor(cornerRadius: 70)
-        avatarImage.kf.setImage(with: url, options: [.processor(processor)])
+        avatarImage.kf.indicatorType = .activity
+        avatarImage.kf.setImage(with: url, placeholder: UIImage(named: Constants.ImageNames.stub), options: [.processor(processor)])
     }
 }

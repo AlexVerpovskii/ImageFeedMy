@@ -20,10 +20,11 @@ final class ImagesListPresenter {
     }()
     
     func imageConverter(indexPath: IndexPath) -> ModelImageCell {
-        let dateText = dateFormatter.string(from: Date())
-        let photosName = photos[indexPath.row].thumbImageURL
+        let photo = photos[indexPath.row]
+        let dateText = dateFormatter.string(from: photo.createdAt ?? Date())
+        let photosName = photo.thumbImageURL
         
-        return ModelImageCell(photosUrl: photosName, dateText: dateText)
+        return ModelImageCell(photosUrl: photosName, dateText: dateText, isLiked: photos[indexPath.row].isLiked)
     }
     
     func createLog(isError: Bool) {

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 typealias TableProtocols = UITableViewDelegate & UITableViewDataSource
 
@@ -33,6 +34,10 @@ final class ImagesListVC: UIViewController {
         super.viewDidLoad()
         view.addSubview(tableView)
         tableView.frame = view.bounds
+        
+        //TODO: подумать
+        imageListPresenter.photos = ImagesListService.shared.photos
+        
         imageServiceObserver = NotificationCenter.default
             .addObserver(
                 forName: ImagesListService.didChangeNotification,
@@ -42,8 +47,8 @@ final class ImagesListVC: UIViewController {
                 guard let self = self else { return }
                 updateTableViewAnimated()
             }
-//        updateTableViewAnimated()
     }
+    
     private func updateTableViewAnimated() {
         let oldCount = imageListPresenter.photos.count
         let newCount = ImagesListService.shared.photos.count
@@ -63,14 +68,15 @@ final class ImagesListVC: UIViewController {
 extension ImagesListVC: TableProtocols {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //        guard
-        //            let image = UIImage(named: imageListPresenter.photos[indexPath.row]),
-        //            let singleImageVC = SingleImageVC(image: image)
-        //        else {
-        //            return
-        //        }
-        //        singleImageVC.modalPresentationStyle = .fullScreen
-        //        present(singleImageVC, animated: true)
+        
+        UIBlockingProgressHUD.show()
+        let photo = imageListPresenter.photos[indexPath.row]
+        let singleImageVC = SingleImageVC()
+        singleImageVC.imageView.kf.setImage(with: URL(string: photo.largeImageURL)) { [weak self] result in
+            guard let self else { return }
+            UIBlockingProgressHUD.dismiss()
+            present(singleImageVC, animated: true)
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -82,6 +88,7 @@ extension ImagesListVC: TableProtocols {
             return UITableViewCell()
         }
         cell.configCell(for: imageListPresenter.imageConverter(indexPath: indexPath), with: indexPath)
+        cell.photo = imageListPresenter.photos[indexPath.row]
         return cell
     }
     

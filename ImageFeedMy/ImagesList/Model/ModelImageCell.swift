@@ -10,4 +10,5 @@ import Foundation
 struct ModelImageCell {
     var photosUrl: String
     var dateText: String
+    var isLiked: Bool
 }

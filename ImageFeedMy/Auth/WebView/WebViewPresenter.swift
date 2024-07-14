@@ -22,7 +22,7 @@ final class WebViewPresenter {
             let urlCompnents = URLComponents(string: url.absoluteString),
             urlCompnents.path == "/" + Constants.Unsplash.pathAuthorize + Constants.Unsplash.native,
             let items = urlCompnents.queryItems,
-            let codeItem = items.first(where: {$0.name == Constants.Unsplash.code }) 
+            let codeItem = items.first(where: {$0.name == Constants.Unsplash.code })
         {
             return codeItem.value
         } else {
