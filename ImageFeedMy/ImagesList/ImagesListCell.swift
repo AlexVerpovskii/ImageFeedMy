@@ -147,14 +147,6 @@ final class ImagesListCell: UITableViewCell {
                 print(data.photo.likedByUser)
                 likeButton.setImage(UIImage(named: data.photo.likedByUser ? Constants.ImageNames.likeOn : Constants.ImageNames.likeOff ), for: .normal)
                 photo.isLiked = data.photo.likedByUser
-                ImagesListService.shared.fetchPhotosNextPage { result in
-                    switch result {
-                    case .success(_):
-                        print("sad")
-                    case .failure(_):
-                        print("sad")
-                    }
-                }
             case .failure(_):
                 print("sad")
             }
