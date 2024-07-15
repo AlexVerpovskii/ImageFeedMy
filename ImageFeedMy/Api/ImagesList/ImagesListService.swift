@@ -49,4 +49,9 @@ final class ImagesListService {
         lastLoadedPage = nextPage
         if let workItem = workItem { DispatchQueue.global().async(execute: workItem) }
     }
+    
+    func cleanPhoto() {
+        photos = []
+        lastLoadedPage = nil
+    }
 }

@@ -10,12 +10,10 @@ import Foundation
 final class PhotoConverter {
     
     static func photoConverter(photoResult: PhotoResult) -> Photo {
-        let createdAt = photoResult.createdAt
-        let dateFormatter = ISO8601DateFormatter()
         return Photo(
             id: photoResult.id,
             size: CGSize(width: Double(photoResult.width), height: Double(photoResult.height)),
-            createdAt: dateFormatter.date(from: createdAt),
+            createdAt: DateFormatterISO.dateFormatter(dateFromString: photoResult.createdAt),
             welcomeDescription: photoResult.description,
             thumbImageURL: photoResult.urls.thumb,
             largeImageURL: photoResult.urls.full,

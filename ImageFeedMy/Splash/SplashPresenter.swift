@@ -60,41 +60,32 @@ final class SplashPresenter {
      */
     private func fetchProfile() {
         UIBlockingProgressHUD.show()
-        ImagesListService.shared.fetchPhotosNextPage { result in
+        ProfileService.shared.fetchProfile { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            guard let self else { return }
             switch result {
-            case .success(_):
-                UIBlockingProgressHUD.dismiss()
-                self.switchToTabBarController()
+            case .success(let profile):
+                ProfileImageService.shared.fetchProfileImage(userName: profile.username) { result in
+                    switch result {
+                    case .success(_):
+                        ImagesListService.shared.fetchPhotosNextPage { result in
+                            switch result {
+                            case .success(_):
+                                UIBlockingProgressHUD.dismiss()
+                                self.switchToTabBarController()
+                            case .failure(let error):
+                                print(error)
+                            }
+                        }
+                    case .failure(let error):
+                        print(error)
+                    }
+                }
             case .failure(let error):
                 print(error)
+                break
             }
         }
-//        ProfileService.shared.fetchProfile { [weak self] result in
-//            UIBlockingProgressHUD.dismiss()
-//            guard let self else { return }
-//            switch result {
-//            case .success(let profile):
-//                ProfileImageService.shared.fetchProfileImage(userName: profile.username) { result in
-//                    switch result {
-//                    case .success(_):
-//                        ImagesListService.shared.fetchPhotosNextPage { result in
-//                            switch result {
-//                            case .success(_):
-//                                UIBlockingProgressHUD.dismiss()
-//                                self.switchToTabBarController()
-//                            case .failure(let error):
-//                                print(error)
-//                            }
-//                        }
-//                    case .failure(let error):
-//                        print(error)
-//                    }
-//                }
-//            case .failure(let error):
-//                print(error)
-//                break
-//            }
-//        }
     }
 }
 

@@ -17,6 +17,7 @@ final class ProfileVC: UIViewController {
         avatarImage.image = UIImage(named: Constants.ImageNames.avatar)
         avatarImage.widthAnchor.constraint(equalToConstant: 70).isActive = true
         avatarImage.heightAnchor.constraint(equalTo: avatarImage.widthAnchor).isActive = true
+        let gradient = CAGradientLayer.makeGradientLayerWithAnimation(size: CGSize(width: 70, height: 70))
         return avatarImage
     }()
     
@@ -26,6 +27,7 @@ final class ProfileVC: UIViewController {
         exitButton.setImage(UIImage(named: Constants.ImageNames.exitButtonIcon), for: .normal)
         exitButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
         exitButton.heightAnchor.constraint(equalTo: exitButton.widthAnchor).isActive = true
+        exitButton.addTarget(self, action: #selector(exitAction), for: .touchUpInside)
         return exitButton
     }()
     
@@ -33,9 +35,9 @@ final class ProfileVC: UIViewController {
         var fullNameLabel = UILabel()
         fullNameLabel.translatesAutoresizingMaskIntoConstraints = false
         fullNameLabel.textColor = .white
-        //TODO: Избавиться от строки
         fullNameLabel.text = "Александр Верповский"
         fullNameLabel.font = UIFont.systemFont(ofSize: 23)
+        let gradient = CAGradientLayer.makeGradientLayerWithAnimation(size: CGSize(width: 223, height: 20))
         return fullNameLabel
     }()
     
@@ -46,6 +48,7 @@ final class ProfileVC: UIViewController {
         //TODO: Избавиться от строки
         nickNameLabel.text = "@AVerpovskii"
         nickNameLabel.font = UIFont.systemFont(ofSize: 13)
+        let gradient = CAGradientLayer.makeGradientLayerWithAnimation(size: CGSize(width: 89, height: 18))
         return nickNameLabel
     }()
     
@@ -56,6 +59,7 @@ final class ProfileVC: UIViewController {
         //TODO: Избавиться от строки
         greetingLabel.text = "Hello, world!"
         greetingLabel.font = UIFont.systemFont(ofSize: 13)
+        let gradient = CAGradientLayer.makeGradientLayerWithAnimation(size: CGSize(width: 67, height: 18))
         return greetingLabel
     }()
     
@@ -127,6 +131,7 @@ final class ProfileVC: UIViewController {
         fullNameLabel.text = profile.name
         nickNameLabel.text = profile.loginName
         greetingLabel.text = profile.bio
+        [fullNameLabel, nickNameLabel, greetingLabel].forEach { $0.layer.sublayers?.removeAll() }
     }
     
     private func updateAvatar() {
@@ -134,8 +139,36 @@ final class ProfileVC: UIViewController {
             let profileImageURL = ProfileImageService.shared.avatarURL,
             let url = URL(string: profileImageURL)
         else { return }
+        avatarImage.layer.sublayers?.removeAll()
         let processor = RoundCornerImageProcessor(cornerRadius: 70)
         avatarImage.kf.indicatorType = .activity
         avatarImage.kf.setImage(with: url, placeholder: UIImage(named: Constants.ImageNames.stub), options: [.processor(processor)])
+    }
+    
+    @objc
+    private func exitAction() {
+        //TODO: Создать и вынести в презентер
+        showErrorAlert()
+    }
+    
+    //TODO: Создать и вынести в презентер
+    private func showErrorAlert() {
+        let ac = UIAlertController(title: "Пока, пока!", message: "Уверены что хотите выйти?", preferredStyle: .alert)
+        let firstAction = UIAlertAction(title: "Да", style: .default) { _ in
+            ac.dismiss(animated: true)
+            ProfileLogoutService.shared.logout()
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                  let window = windowScene.windows.first else { return }
+            let vc = SplashVC()
+            window.rootViewController = vc
+            window.makeKeyAndVisible()
+        }
+        let secondAction = UIAlertAction(title: "Нет", style: .default) { _ in
+            ac.dismiss(animated: true)
+        }
+        ac.addAction(firstAction)
+        let action = UIAlertAction(title: "Ok", style: .cancel)
+        ac.addAction(action)
+        present(ac, animated: true)
     }
 }

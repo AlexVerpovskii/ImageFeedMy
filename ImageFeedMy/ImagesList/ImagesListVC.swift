@@ -15,11 +15,13 @@ final class ImagesListVC: UIViewController {
     //MARK: - Private propierties
     private final let imageListPresenter = ImagesListPresenter()
     private final var imageServiceObserver: NSObjectProtocol?
+    private var state: Constants.DisplayState = .loading
     
     //MARK: Private UI elements
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: CGRect.zero, style: .plain)
         tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
+        tableView.register(GradientCell.self, forCellReuseIdentifier: GradientCell.identifier)
         tableView.separatorStyle = .none
         tableView.delegate = self
         tableView.dataSource = self
@@ -87,9 +89,20 @@ extension ImagesListVC: TableProtocols {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier) as? ImagesListCell else {
             return UITableViewCell()
         }
-        cell.configCell(for: imageListPresenter.imageConverter(indexPath: indexPath), with: indexPath)
-        cell.photo = imageListPresenter.photos[indexPath.row]
-        return cell
+        state = .loading
+        cell.configCell(for: imageListPresenter.imageConverter(indexPath: indexPath), with: indexPath) { [weak self] in
+            self?.state = .success
+            self?.tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+        cell.photos = imageListPresenter.photos
+        
+        switch state {
+        case .loading:
+            let gradientCell = tableView.dequeueReusableCell(withIdentifier: GradientCell.identifier, for: indexPath)
+            return gradientCell
+        case .success:
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -26,6 +26,11 @@ enum Constants {
         static let stub = "Stub"
     }
     
+    enum DisplayState {
+        case loading
+        case success
+    }
+    
     enum Other {
         static let reuseIdentifier = "ImagesListCell"
         static let dateFormat = "dd MMMM yyyy"
@@ -37,7 +42,7 @@ enum Constants {
         static let accessKey = "iYvSt9RTk4aHHX2aFooC9DdE2L_AyIxEaNi4IGP8PlY"
 //        static let accessKey = "XuwKq0M44OW4ooZKjTR30sSaZGNuIHq_ukWodfvhyyg"
         static let secretKey = "hRkIvS8mskQ7NsdRM6VaQoqmWSoUW1fsvCsOTtA5RLs"
-//        static let secretKey = "bredPKsM4it_m2vQIXkT1jD_cNe2m26OvMsmevZdhzQ" 
+//        static let secretKey = "bredPKsM4it_m2vQIXkT1jD_cNe2m26OvMsmevZdhzQ"
         static let redirectUri = "urn:ietf:wg:oauth:2.0:oob"
         static let accessScope = "public+read_user+write_likes"
         static let defaultBaseURL = URL(string: "https://api.unsplash.com")!

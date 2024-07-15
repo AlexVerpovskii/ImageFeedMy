@@ -13,7 +13,7 @@ final class ImagesListCell: UITableViewCell {
     //MARK: - Static properties
     static let reuseIdentifier = Constants.Other.reuseIdentifier
     
-    var photo: Photo?
+    var photos: [Photo] = []
     
     private lazy var customContentView: UIView = {
         let view = UIView()
@@ -94,6 +94,8 @@ final class ImagesListCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         cellImage.kf.cancelDownloadTask()
+        cellImage.image = nil
+        dateLabel.text = nil
     }
     
     private func setupConstraint() {
@@ -124,9 +126,11 @@ final class ImagesListCell: UITableViewCell {
         ])
     }
     
-    func configCell(for model: ModelImageCell, with indexPath: IndexPath) {
-        cellImage.kf.setImage(with: URL(string: model.photosUrl))
-        //        self.tag = indexPath.row
+    func configCell(for model: ModelImageCell, with indexPath: IndexPath, _ completion: @escaping  () -> Void) {
+        cellImage.kf.setImage(with: URL(string: model.photosUrl), placeholder: UIImage(named: Constants.ImageNames.stub)) { _ in
+            completion()
+        }
+        tag = indexPath.row
         dateLabel.text = model.dateText
         likeButton.setImage(UIImage(named: model.isLiked ? Constants.ImageNames.likeOn : Constants.ImageNames.likeOff ), for: .normal)
     }
@@ -134,21 +138,21 @@ final class ImagesListCell: UITableViewCell {
     //TODO: Создать презентер и вынести логику
     @objc
     private func like(_ sender: UIButton) {
-        guard var photo else { return }
         UIBlockingProgressHUD.show()
-        //        let indexPathRow = sender.tag
-        //MARK: Стопер!
-        print(photo.isLiked)
+        let indexPathRow = sender.tag
+        var photo = photos[indexPathRow]
         LikeService.shared.fetchLike(liked: !photo.isLiked, photoId: photo.id) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let data):
                 UIBlockingProgressHUD.dismiss()
-                print(data.photo.likedByUser)
                 likeButton.setImage(UIImage(named: data.photo.likedByUser ? Constants.ImageNames.likeOn : Constants.ImageNames.likeOff ), for: .normal)
                 photo.isLiked = data.photo.likedByUser
-            case .failure(_):
-                print("sad")
+                photos[indexPathRow] = photo
+            case .failure(let error):
+                print(error)
+                //TODO вынести в логгер
+                /*Log.createlog(log: LogModel(serviceName: LikeService.SERVICE_NAME, message: "Ошибка при обработке запроса лайка", systemError: error.localizedDescription, eventType: .error))*/
             }
         }
     }

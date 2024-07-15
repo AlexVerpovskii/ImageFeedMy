@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		28103FD42C32DDB5006EF0F1 /* Logging in Frameworks */ = {isa = PBXBuildFile; productRef = 28103FD32C32DDB5006EF0F1 /* Logging */; };
+		2817FB3B2C45263B0028A0E7 /* DateFormatterISO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2817FB3A2C45263B0028A0E7 /* DateFormatterISO.swift */; };
 		281E21922C21951B000C0CCD /* AuthPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281E21912C21951B000C0CCD /* AuthPresenter.swift */; };
 		281E21972C21A007000C0CCD /* OAuth2Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281E21962C21A007000C0CCD /* OAuth2Service.swift */; };
 		281E21992C21A0B7000C0CCD /* URLSession+data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281E21982C21A0B7000C0CCD /* URLSession+data.swift */; };
@@ -17,6 +18,8 @@
 		281E21A42C21A77A000C0CCD /* SplashPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 281E21A32C21A77A000C0CCD /* SplashPresenter.swift */; };
 		28304D412C188CCB00CAE7E9 /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28304D402C188CCB00CAE7E9 /* ProfileVC.swift */; };
 		28304D432C1B4C9700CAE7E9 /* RootTabBarVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28304D422C1B4C9700CAE7E9 /* RootTabBarVC.swift */; };
+		283925E72C459A0F0078707F /* CAGradientLayer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283925E62C459A0F0078707F /* CAGradientLayer+Extensions.swift */; };
+		283925EA2C45A1FA0078707F /* GradientCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283925E92C45A1FA0078707F /* GradientCell.swift */; };
 		28398F272C31E99600EF03C5 /* SwiftKeychainWrapper in Frameworks */ = {isa = PBXBuildFile; productRef = 28398F262C31E99600EF03C5 /* SwiftKeychainWrapper */; };
 		28398F2A2C31E99D00EF03C5 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 28398F292C31E99D00EF03C5 /* Kingfisher */; };
 		28398F2D2C31E9A400EF03C5 /* ProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 28398F2C2C31E9A400EF03C5 /* ProgressHUD */; };
@@ -60,6 +63,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2817FB3A2C45263B0028A0E7 /* DateFormatterISO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatterISO.swift; sourceTree = "<group>"; };
 		281E21912C21951B000C0CCD /* AuthPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthPresenter.swift; sourceTree = "<group>"; };
 		281E21962C21A007000C0CCD /* OAuth2Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuth2Service.swift; sourceTree = "<group>"; };
 		281E21982C21A0B7000C0CCD /* URLSession+data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+data.swift"; sourceTree = "<group>"; };
@@ -69,6 +73,8 @@
 		281E21A32C21A77A000C0CCD /* SplashPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashPresenter.swift; sourceTree = "<group>"; };
 		28304D402C188CCB00CAE7E9 /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
 		28304D422C1B4C9700CAE7E9 /* RootTabBarVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabBarVC.swift; sourceTree = "<group>"; };
+		283925E62C459A0F0078707F /* CAGradientLayer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CAGradientLayer+Extensions.swift"; sourceTree = "<group>"; };
+		283925E92C45A1FA0078707F /* GradientCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientCell.swift; sourceTree = "<group>"; };
 		28398F2E2C31EA3100EF03C5 /* NetworkApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkApi.swift; sourceTree = "<group>"; };
 		28398F312C31EAA700EF03C5 /* BaseRequestProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequestProtocol.swift; sourceTree = "<group>"; };
 		28398F332C31EAC600EF03C5 /* BaseRequestImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseRequestImpl.swift; sourceTree = "<group>"; };
@@ -187,6 +193,15 @@
 			path = UserSettings;
 			sourceTree = "<group>";
 		};
+		283925E82C45A1EF0078707F /*  Cell */ = {
+			isa = PBXGroup;
+			children = (
+				3373359D2BE9016D00B71972 /* ImagesListCell.swift */,
+				283925E92C45A1FA0078707F /* GradientCell.swift */,
+			);
+			path = " Cell";
+			sourceTree = "<group>";
+		};
 		28398F302C31EA9300EF03C5 /* NetworkRequest */ = {
 			isa = PBXGroup;
 			children = (
@@ -287,8 +302,8 @@
 		28B4B94D2C1F0A8B00EF251F /* ImagesList */ = {
 			isa = PBXGroup;
 			children = (
+				283925E82C45A1EF0078707F /*  Cell */,
 				286870372C21CD7A0026FBE9 /* Model */,
-				3373359D2BE9016D00B71972 /* ImagesListCell.swift */,
 				33169DCE2BE3AC6000943F51 /* ImagesListVC.swift */,
 				2868703A2C21CE880026FBE9 /* ImagesListPresenter.swift */,
 				288B46392C330C9D008073B4 /* PhotoConverter.swift */,
@@ -373,6 +388,8 @@
 				33CB3CDC2BE926D60063F36A /* Constants.swift */,
 				28398F3B2C320FDF00EF03C5 /* UIBlockingProgressHUD.swift */,
 				28398F592C32250900EF03C5 /* Log.swift */,
+				2817FB3A2C45263B0028A0E7 /* DateFormatterISO.swift */,
+				283925E62C459A0F0078707F /* CAGradientLayer+Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -474,6 +491,7 @@
 				28398F502C32154B00EF03C5 /* ProfileConverter.swift in Sources */,
 				285DCBA62C3F02A900C3270D /* Dislike.swift in Sources */,
 				28B4B9532C1F291E00EF251F /* AuthVC.swift in Sources */,
+				2817FB3B2C45263B0028A0E7 /* DateFormatterISO.swift in Sources */,
 				28CA65222C4326DF0043E5B2 /* ProfileLogoutService.swift in Sources */,
 				281E21972C21A007000C0CCD /* OAuth2Service.swift in Sources */,
 				28304D412C188CCB00CAE7E9 /* ProfileVC.swift in Sources */,
@@ -487,6 +505,7 @@
 				28304D432C1B4C9700CAE7E9 /* RootTabBarVC.swift in Sources */,
 				288B46322C330430008073B4 /* Photo.swift in Sources */,
 				28398F322C31EAA700EF03C5 /* BaseRequestProtocol.swift in Sources */,
+				283925EA2C45A1FA0078707F /* GradientCell.swift in Sources */,
 				288B463A2C330C9D008073B4 /* PhotoConverter.swift in Sources */,
 				33169DCF2BE3AC6000943F51 /* ImagesListVC.swift in Sources */,
 				28398F5A2C32250900EF03C5 /* Log.swift in Sources */,
@@ -512,6 +531,7 @@
 				2868703B2C21CE880026FBE9 /* ImagesListPresenter.swift in Sources */,
 				28398F402C32122700EF03C5 /* ProfileResult.swift in Sources */,
 				281E21A42C21A77A000C0CCD /* SplashPresenter.swift in Sources */,
+				283925E72C459A0F0078707F /* CAGradientLayer+Extensions.swift in Sources */,
 				28398F4C2C3212D600EF03C5 /* ProfileService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
