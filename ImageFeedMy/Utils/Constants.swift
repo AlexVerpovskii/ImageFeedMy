@@ -32,7 +32,6 @@ enum Constants {
     }
     
     enum Other {
-        static let reuseIdentifier = "ImagesListCell"
         static let dateFormat = "dd MMMM yyyy"
         static let formatterLocal = "ru_RU"
         static let empty = ""

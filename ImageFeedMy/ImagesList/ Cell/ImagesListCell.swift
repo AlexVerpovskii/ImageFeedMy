@@ -11,7 +11,7 @@ import Kingfisher
 final class ImagesListCell: UITableViewCell {
     
     //MARK: - Static properties
-    static let reuseIdentifier = Constants.Other.reuseIdentifier
+    static let reuseIdentifier = "ImagesListCell"
     
     var photos: [Photo] = []
     
@@ -151,6 +151,7 @@ final class ImagesListCell: UITableViewCell {
                 photos[indexPathRow] = photo
             case .failure(let error):
                 print(error)
+                UIBlockingProgressHUD.dismiss()
                 //TODO вынести в логгер
                 /*Log.createlog(log: LogModel(serviceName: LikeService.SERVICE_NAME, message: "Ошибка при обработке запроса лайка", systemError: error.localizedDescription, eventType: .error))*/
             }
