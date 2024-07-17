@@ -8,6 +8,8 @@
 import Foundation
 
 final class OAuth2Service {
+    private static let SERVICE_NAME = "OAuth2Service"
+    
     static let shared = OAuth2Service()
     
     private var model: OAuthTokenResponseBody?
@@ -17,8 +19,6 @@ final class OAuth2Service {
     private init() {}
     
     func fetchOAuthToken(code: String, completion: @escaping (Swift.Result<String, Error>) -> Void) {
-        let request = OAuth2Request(code: code)
-        
         assert(Thread.isMainThread)
         guard lastCode != code
         else {
@@ -28,6 +28,8 @@ final class OAuth2Service {
         
         workItem?.cancel()
         lastCode = code
+        
+        let request = OAuth2Request(code: code)
         
         //TODO: Нужен совет по безопасности и многопоточности :)
         workItem = DispatchWorkItem { [weak self] in
@@ -40,6 +42,7 @@ final class OAuth2Service {
                     completion(.success(model?.accessToken ?? ""))
                 case .failure(let error):
                     completion(.failure(Constants.NetworkError.otherError(error)))
+                    Log.createlog(log: LogModel(serviceName: OAuth2Service.SERVICE_NAME, message: "Ошибка при обработке запроса на получение токена", systemError: error.localizedDescription, eventType: .error))
                 }
             }
         }

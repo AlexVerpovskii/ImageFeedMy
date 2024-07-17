@@ -10,6 +10,8 @@ import Foundation
 typealias NetworkError = Constants.NetworkError
 
 final class NetworkApi {
+    private static let SERVICE_NAME = "NetworkApi"
+    
     static let shared = NetworkApi()
     
     private init() {}
@@ -27,14 +29,12 @@ final class NetworkApi {
                     let data = try JSONDecoder().decode(Model.self, from: data)
                     completion(.success(data))
                 } catch {
-                    //add log invalid data decoder
                     completion(.failure(.invalidDecoder))
-                    print(error)
+                    Log.createlog(log: LogModel(serviceName: NetworkApi.SERVICE_NAME, message: "Ошибка при обработке json'а", systemError: error.localizedDescription, eventType: .error))
                 }
             case .failure(let error):
-                //add log
                 completion(.failure(.otherError(error)))
-                print(error)
+                Log.createlog(log: LogModel(serviceName: NetworkApi.SERVICE_NAME, message: "Ошибка при обработке запроса", systemError: error.localizedDescription, eventType: .error))
             }
         }.resume()
     }

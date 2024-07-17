@@ -54,19 +54,29 @@ final class SplashPresenter {
         window.rootViewController = rootTabBarVC
     }
     
+    /**
+     TODO: Нужно ли тут все в одну функцию или разделить загрузку профиля и загрузку фото?
+     Есть мысль, что фетчить надо ленту, а профиль при переходе в контроллер профиля
+     */
     private func fetchProfile() {
         UIBlockingProgressHUD.show()
         ProfileService.shared.fetchProfile { [weak self] result in
             UIBlockingProgressHUD.dismiss()
             guard let self else { return }
-            
             switch result {
             case .success(let profile):
-                ProfileImageService.shared.fetchProfileImage(userName: profile.username) { [weak self] result in
-                    guard let self = self else { return }
+                ProfileImageService.shared.fetchProfileImage(userName: profile.username) { result in
                     switch result {
                     case .success(_):
-                        switchToTabBarController()
+                        ImagesListService.shared.fetchPhotosNextPage { result in
+                            switch result {
+                            case .success(_):
+                                UIBlockingProgressHUD.dismiss()
+                                self.switchToTabBarController()
+                            case .failure(let error):
+                                print(error)
+                            }
+                        }
                     case .failure(let error):
                         print(error)
                     }

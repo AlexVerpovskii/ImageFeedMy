@@ -8,6 +8,8 @@
 import Foundation
 
 final class ProfileImageService {
+    private static let SERVICE_NAME = "ProfileImageService"
+    
     static var shared = ProfileImageService()
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
@@ -33,6 +35,7 @@ final class ProfileImageService {
                 completion(.success(data.profileImage?.large ?? ""))
             case .failure(let error):
                 completion(.failure(Constants.NetworkError.otherError(error)))
+                Log.createlog(log: LogModel(serviceName: ProfileImageService.SERVICE_NAME, message: "Ошибка при обработке запроса на получение картинки", systemError: error.localizedDescription, eventType: .error))
             }
         }
     }
