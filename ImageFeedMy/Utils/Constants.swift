@@ -57,6 +57,8 @@ enum Constants {
         static let bearer = "Bearer"
         static let authorization = "Authorization"
         static let defaultApiUrl = "api.unsplash.com"
+        static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+
         enum QueryItem {
             static let clientId = "client_id"
             static let redirectUri = "redirect_uri"

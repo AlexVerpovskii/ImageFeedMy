@@ -14,6 +14,7 @@ final class WebViewVC: UIViewController {
         var webView = WKWebView()
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.navigationDelegate = self
+        webView.accessibilityIdentifier = "UnsplashWebView"
         return webView
     }()
     
@@ -25,19 +26,19 @@ final class WebViewVC: UIViewController {
         return progressView
     }()
     
-    private final let webViewPresenter: WebViewProtocol = WebViewPresenter()
-    private final var webViewVCDelegate: WebViewVCDelegate?
+    final var webViewPresenter: WebViewProtocol = WebViewPresenter()
+    final var webViewVCDelegate: WebViewVCDelegate?
     private final var estimatedProgressObservation: NSKeyValueObservation?
     
-    init(webViewVCDelegate: WebViewVCDelegate) {
-        super.init(nibName: nil, bundle: nil)
-        self.webViewVCDelegate = webViewVCDelegate
-    }
-    
-    required init?(coder: NSCoder) {
-        //TODO: Избавиться от строки
-        fatalError("init(coder:) has not been implemented")
-    }
+//    init(webViewVCDelegate: WebViewVCDelegate) {
+//        super.init(nibName: nil, bundle: nil)
+//        self.webViewVCDelegate = webViewVCDelegate
+//    }
+//    
+//    required init?(coder: NSCoder) {
+//        //TODO: Избавиться от строки
+//        fatalError("init(coder:) has not been implemented")
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +47,8 @@ final class WebViewVC: UIViewController {
         view.backgroundColor = .white
         navigationController?.navigationBar.standardAppearance.backgroundColor = .white
         setupConstraint()
-        webView.load(webViewPresenter.loadAuth())
+        guard let request = webViewPresenter.loadAuth() else { return }
+        webView.load(request)
         estimatedProgressObservation = webView.observe(
             \.estimatedProgress,
              options: [],
@@ -91,7 +93,8 @@ final class WebViewVC: UIViewController {
 extension WebViewVC: WKNavigationDelegate {
     
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if let code = webViewPresenter.code(from: navigationAction) {
+        guard let url = navigationAction.request.url else { return }
+        if let code = webViewPresenter.code(from: url.absoluteString) {
             webViewVCDelegate?.webViewVC(self, didAuthenticateWithCode: code)
             decisionHandler(.cancel)
         } else {

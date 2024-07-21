@@ -41,7 +41,7 @@ final class ProfileLogoutService {
     
     private func clearImageList() {
         let imagesListPresenter = ImagesListPresenter()
-        imagesListPresenter.photos = []
+        imagesListPresenter.photosArray = []
     }
     
 }

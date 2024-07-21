@@ -23,6 +23,7 @@ final class ProfileVC: UIViewController {
     
     private lazy var exitButton: UIButton = {
         var exitButton = UIButton()
+        exitButton.accessibilityIdentifier = "logoutButton"
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         exitButton.setImage(UIImage(named: Constants.ImageNames.exitButtonIcon), for: .normal)
         exitButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
@@ -154,7 +155,8 @@ final class ProfileVC: UIViewController {
     //TODO: Создать и вынести в презентер
     private func showErrorAlert() {
         let ac = UIAlertController(title: "Пока, пока!", message: "Уверены что хотите выйти?", preferredStyle: .alert)
-        let firstAction = UIAlertAction(title: "Да", style: .default) { _ in
+        let firstAction = UIAlertAction(title: "Да", style: .default) { action in
+            action.accessibilityIdentifier = "Yes"
             ac.dismiss(animated: true)
             ProfileLogoutService.shared.logout()
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
