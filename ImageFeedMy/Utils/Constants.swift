@@ -38,10 +38,10 @@ enum Constants {
     }
     
     enum Unsplash {
-        static let accessKey = "iYvSt9RTk4aHHX2aFooC9DdE2L_AyIxEaNi4IGP8PlY"
-//        static let accessKey = "XuwKq0M44OW4ooZKjTR30sSaZGNuIHq_ukWodfvhyyg"
-        static let secretKey = "hRkIvS8mskQ7NsdRM6VaQoqmWSoUW1fsvCsOTtA5RLs"
-//        static let secretKey = "bredPKsM4it_m2vQIXkT1jD_cNe2m26OvMsmevZdhzQ"
+//        static let accessKey = "iYvSt9RTk4aHHX2aFooC9DdE2L_AyIxEaNi4IGP8PlY"
+        static let accessKey = "_MHfbPpaRDMYNFUinM3S3eRA16VjsU8GyQIu6fD6rwU"
+//        static let secretKey = "hRkIvS8mskQ7NsdRM6VaQoqmWSoUW1fsvCsOTtA5RLs"
+        static let secretKey = "jcsl7Nhva_V2AoedylC7QhR18pdbOsnh6a-5EXZBEQQ"
         static let redirectUri = "urn:ietf:wg:oauth:2.0:oob"
         static let accessScope = "public+read_user+write_likes"
         static let defaultBaseURL = URL(string: "https://api.unsplash.com")!
@@ -57,6 +57,8 @@ enum Constants {
         static let bearer = "Bearer"
         static let authorization = "Authorization"
         static let defaultApiUrl = "api.unsplash.com"
+        static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+
         enum QueryItem {
             static let clientId = "client_id"
             static let redirectUri = "redirect_uri"

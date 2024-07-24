@@ -24,6 +24,7 @@ final class AuthVC: UIViewController {
     
     private lazy var enterButton: UIButton = {
         var enterButton = UIButton()
+        enterButton.accessibilityIdentifier = "Authenticate"
         enterButton.translatesAutoresizingMaskIntoConstraints = false
         enterButton.setTitle("Войти", for: .normal)
         enterButton.setTitleColor(.black, for: .normal)
@@ -75,7 +76,11 @@ final class AuthVC: UIViewController {
     @objc
     private func enterAction() {
         guard let authPresenter else { return }
-        let webViewVC = WebViewVC(webViewVCDelegate: authPresenter)
+        let webViewVC = WebViewVC()
+        webViewVC.webViewVCDelegate = authPresenter
+        let webViewPresenter = WebViewPresenter()
+        webViewVC.webViewPresenter = webViewPresenter
+        webViewPresenter.view = webViewVC
         navigationController?.pushViewController(webViewVC, animated: true)
         navigationController?.modalPresentationStyle = .fullScreen
     }

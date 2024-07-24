@@ -13,7 +13,7 @@ struct ProfileConverter {
         return Profile(
             username: profileResult.username,
             name: name,
-            loginName: "@ \(profileResult.username)",
+            loginName: "@\(profileResult.username)",
             bio: profileResult.bio ?? ""
         )
     }

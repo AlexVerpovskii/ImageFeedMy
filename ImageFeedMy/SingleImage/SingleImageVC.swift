@@ -19,6 +19,7 @@ final class SingleImageVC: UIViewController {
     
     private lazy var backButton: UIButton = {
         var backButton = UIButton()
+        backButton.accessibilityIdentifier = "backButton"
         backButton.setImage(UIImage(named: Constants.ImageNames.backwardButton), for: .normal)
         backButton.translatesAutoresizingMaskIntoConstraints = false
         backButton.addTarget(self, action: #selector(backButtonAction), for: .touchUpInside)

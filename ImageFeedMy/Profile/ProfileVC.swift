@@ -23,6 +23,7 @@ final class ProfileVC: UIViewController {
     
     private lazy var exitButton: UIButton = {
         var exitButton = UIButton()
+        exitButton.accessibilityIdentifier = "logoutButton"
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         exitButton.setImage(UIImage(named: Constants.ImageNames.exitButtonIcon), for: .normal)
         exitButton.widthAnchor.constraint(equalToConstant: 44).isActive = true
@@ -130,6 +131,7 @@ final class ProfileVC: UIViewController {
         guard let profile = ProfileService.shared.profile else { return }
         fullNameLabel.text = profile.name
         nickNameLabel.text = profile.loginName
+        print(profile.loginName)
         greetingLabel.text = profile.bio
         [fullNameLabel, nickNameLabel, greetingLabel].forEach { $0.layer.sublayers?.removeAll() }
     }
@@ -154,7 +156,7 @@ final class ProfileVC: UIViewController {
     //TODO: Создать и вынести в презентер
     private func showErrorAlert() {
         let ac = UIAlertController(title: "Пока, пока!", message: "Уверены что хотите выйти?", preferredStyle: .alert)
-        let firstAction = UIAlertAction(title: "Да", style: .default) { _ in
+        let firstAction = UIAlertAction(title: "Да", style: .default) { action in
             ac.dismiss(animated: true)
             ProfileLogoutService.shared.logout()
             guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -166,9 +168,9 @@ final class ProfileVC: UIViewController {
         let secondAction = UIAlertAction(title: "Нет", style: .default) { _ in
             ac.dismiss(animated: true)
         }
+        firstAction.accessibilityIdentifier = "Yes"
         ac.addAction(firstAction)
-        let action = UIAlertAction(title: "Ok", style: .cancel)
-        ac.addAction(action)
+        ac.addAction(secondAction)
         present(ac, animated: true)
     }
 }

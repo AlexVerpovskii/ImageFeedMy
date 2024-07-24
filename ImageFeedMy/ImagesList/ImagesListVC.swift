@@ -13,12 +13,12 @@ typealias TableProtocols = UITableViewDelegate & UITableViewDataSource
 final class ImagesListVC: UIViewController {
     
     //MARK: - Private propierties
-    private final let imageListPresenter = ImagesListPresenter()
+    final var  imageListPresenter: ImagesListPresenterProtocol? = ImagesListPresenter()
     private final var imageServiceObserver: NSObjectProtocol?
     private var state: Constants.DisplayState = .loading
     
     //MARK: Private UI elements
-    private lazy var tableView: UITableView = {
+    lazy var tableView: UITableView = {
         let tableView = UITableView(frame: CGRect.zero, style: .plain)
         tableView.register(ImagesListCell.self, forCellReuseIdentifier: ImagesListCell.reuseIdentifier)
         tableView.register(GradientCell.self, forCellReuseIdentifier: GradientCell.identifier)
@@ -38,8 +38,7 @@ final class ImagesListVC: UIViewController {
         tableView.frame = view.bounds
         
         //TODO: подумать
-        imageListPresenter.photos = ImagesListService.shared.photos
-        
+        imageListPresenter?.fetchPhoto()
         imageServiceObserver = NotificationCenter.default
             .addObserver(
                 forName: ImagesListService.didChangeNotification,
@@ -52,9 +51,10 @@ final class ImagesListVC: UIViewController {
     }
     
     private func updateTableViewAnimated() {
+        guard let imageListPresenter else { return }
         let oldCount = imageListPresenter.photos.count
         let newCount = ImagesListService.shared.photos.count
-        imageListPresenter.photos = ImagesListService.shared.photos
+        imageListPresenter.fetchPhoto()
         if oldCount != newCount {
             tableView.performBatchUpdates {
                 let indexPaths = (oldCount..<newCount).map { i in
@@ -72,8 +72,12 @@ extension ImagesListVC: TableProtocols {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         UIBlockingProgressHUD.show()
-        let photo = imageListPresenter.photos[indexPath.row]
+        guard let photo = imageListPresenter?.photos[indexPath.row] else {
+            UIBlockingProgressHUD.dismiss()
+            return
+        }
         let singleImageVC = SingleImageVC()
+        singleImageVC.modalPresentationStyle = .fullScreen
         singleImageVC.imageView.kf.setImage(with: URL(string: photo.largeImageURL)) { [weak self] result in
             guard let self else { return }
             UIBlockingProgressHUD.dismiss()
@@ -82,15 +86,16 @@ extension ImagesListVC: TableProtocols {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return imageListPresenter.photos.count
+        return imageListPresenter?.photos.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier) as? ImagesListCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ImagesListCell.reuseIdentifier) as? ImagesListCell,
+              let imageListPresenter else {
             return UITableViewCell()
         }
         state = .loading
-        cell.configCell(for: imageListPresenter.imageConverter(indexPath: indexPath), with: indexPath) { [weak self] in
+        cell.configCell(for: imageListPresenter.imageConverter(index: indexPath.row), with: indexPath) { [weak self] in
             self?.state = .success
             self?.tableView.reloadRows(at: [indexPath], with: .automatic)
         }
@@ -106,6 +111,7 @@ extension ImagesListVC: TableProtocols {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        guard let imageListPresenter else { return 200 }
         let imageSize = imageListPresenter.photos[indexPath.row]
         let imageInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
         let imageViewWidth = tableView.bounds.width - imageInsets.left - imageInsets.right
@@ -114,14 +120,18 @@ extension ImagesListVC: TableProtocols {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let testMode = ProcessInfo.processInfo.arguments.contains("TestMode")
+        if testMode {
+            return
+        }
         if indexPath.row != tableView.indexPathForSelectedRow?.last {
             ImagesListService.shared.fetchPhotosNextPage { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(_):
-                    imageListPresenter.createLog(isError: false)
+                    imageListPresenter?.createLog(isError: false)
                 case .failure(_):
-                    imageListPresenter.createLog(isError: true)
+                    imageListPresenter?.createLog(isError: true)
                 }
             }
         }

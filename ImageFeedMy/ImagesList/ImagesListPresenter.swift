@@ -7,10 +7,17 @@
 
 import Foundation
 
+protocol ImagesListPresenterProtocol {
+    var photos: [Photo] { get }
+    func fetchPhoto()
+    func imageConverter(index: Int) -> ModelImageCell
+    func createLog(isError: Bool)
+}
+
 final class ImagesListPresenter {
     private static let SERVICE_NAME = "ImagesListPresenter"
 
-    var photos: [Photo] = []
+    var photosArray: [Photo] = []
     
     private lazy var dateFormatter: DateFormatter = {
         let dateFormatter = DateFormatter()
@@ -19,12 +26,12 @@ final class ImagesListPresenter {
         return dateFormatter
     }()
     
-    func imageConverter(indexPath: IndexPath) -> ModelImageCell {
-        let photo = photos[indexPath.row]
+    func imageConverter(index: Int) -> ModelImageCell {
+        let photo = photos[index]
         let dateText = dateFormatter.string(from: photo.createdAt ?? Date())
         let photosName = photo.thumbImageURL
         
-        return ModelImageCell(photosUrl: photosName, dateText: dateText, isLiked: photos[indexPath.row].isLiked)
+        return ModelImageCell(photosUrl: photosName, dateText: dateText, isLiked: photos[index].isLiked)
     }
     
     func createLog(isError: Bool) {
@@ -33,5 +40,15 @@ final class ImagesListPresenter {
         } else {
             Log.createlog(log: LogModel(serviceName: ImagesListPresenter.SERVICE_NAME, message: "Получение фотографий новой страницы", systemError: nil, eventType: .info))
         }
+    }
+}
+
+extension ImagesListPresenter: ImagesListPresenterProtocol {
+    var photos: [Photo] {
+        return photosArray
+    }
+    
+    func fetchPhoto() {
+        photosArray = ImagesListService.shared.photos
     }
 }

@@ -8,18 +8,24 @@
 import Foundation
 import WebKit
 
-protocol WebViewProtocol {
-    func loadAuth() -> URLRequest
-    func code(from navigationAction: WKNavigationAction) -> String?
+protocol WebViewPresenterProtocol {
+    var view: WebViewViewControllerProtocol? { get set }
+    func didUpdateProgressValue(_ newValue: Double)
+    func code(from url: String) -> String?
+    func viewDidLoad()
 }
 
 //TODO: Вопрос: Нужен ли тут вообще протокол или проще его убрать и работать в controller напрямую?
-final class WebViewPresenter {
+final class WebViewPresenter: WebViewPresenterProtocol {
+    weak var view: WebViewViewControllerProtocol?
     
-    private func getCode(from navigationAction: WKNavigationAction) -> String? {
+    func viewDidLoad() {
+        view?.load(request: loadAuth()!)
+    }
+    
+    private func getCode(from url: String) -> String? {
         if
-            let url = navigationAction.request.url,
-            let urlCompnents = URLComponents(string: url.absoluteString),
+            let urlCompnents = URLComponents(string: url),
             urlCompnents.path == "/" + Constants.Unsplash.pathAuthorize + Constants.Unsplash.native,
             let items = urlCompnents.queryItems,
             let codeItem = items.first(where: {$0.name == Constants.Unsplash.code })
@@ -29,15 +35,26 @@ final class WebViewPresenter {
             return nil
         }
     }
-}
-
-extension WebViewPresenter: WebViewProtocol {
-    func loadAuth() -> URLRequest {
+    
+    func loadAuth() -> URLRequest? {
         guard let request = WebViewRequest().urlRequest else { fatalError("log") }
         return request
     }
     
-    func code(from navigationAction: WKNavigationAction) -> String? {
-        return getCode(from: navigationAction)
+    func code(from url: String) -> String? {
+        return getCode(from: url)
     }
+    
+    func didUpdateProgressValue(_ newValue: Double) {
+        let newProgressValue = Float(newValue)
+        view?.setProgressValue(newProgressValue)
+        
+        let shouldHideProgress = shouldHideProgress(for: newProgressValue)
+        view?.setProgressHidden(shouldHideProgress)
+    }
+    
+    func shouldHideProgress(for value: Float) -> Bool {
+        abs(value - 1.0) <= 0.0001
+    }
+    
 }
