@@ -8,33 +8,19 @@
 @testable import ImageFeedMy
 import XCTest
 
-final class WebViewPresenterSpy: WebViewProtocol {
-    
-    func code(from url: String) -> String? {
-        nil
-    }
-    
-    var viewDidLoadCalled = false
-    
-    func loadAuth() -> URLRequest? {
-        viewDidLoadCalled.toggle()
-        return nil
-    }
-}
-
 final class WebViewViewControllerSpy: UIViewController {
     
     var loadRequestCalled = false
 }
 
 final class WebViewTests: XCTestCase {
-
-    func testViewControllerCallsViewDidLoad() {
+    
+    func testPresenterCallsLoadRequest() {
         // Given
-        let viewController = WebViewVC()
         let presenter = WebViewPresenterSpy()
+        let viewController = WebViewVC()
         viewController.webViewPresenter = presenter
-
+        presenter.view = viewController
         // When
         let _ = viewController.view
         // Then
@@ -57,6 +43,8 @@ final class WebViewTests: XCTestCase {
         XCTAssertTrue(url.absoluteString.contains(configuration.accessScope))
     }
     
+    //MARK: Устранение замечаний - testCodeFromURL
+    //MARK: ( AuthHelper().testCodeFromURL() ) Я презенторы начал делать с самого начала курса, поэтому слегка отличаются названия классов. Вот тест, который проверяет корректность распознавания ссылки, пеперисывать сейчас презентер под урок, увы, времени нет. Дедлайн горит :(
     func testCodeFromUrl() {
         // Given
         let presenter = WebViewPresenter()
@@ -64,11 +52,20 @@ final class WebViewTests: XCTestCase {
         urlComponents.path = "/oauth/authorize/native"
         urlComponents.queryItems = [URLQueryItem(name: "code", value: "testValue")]
         guard let url = urlComponents.url else { return }
-
+        
         // When
         let code = presenter.code(from: url.absoluteString)
-
+        
         // Then
         XCTAssertEqual(code, "testValue")
+    }
+    //MARK: Устранение замечаний - testProgressHiddenWhenOne
+    func testProgressHiddenWhenOne() {
+        let presenter = WebViewPresenter()
+        let progress: Float = 1.0
+        
+        let shouldHideProgress = presenter.shouldHideProgress(for: progress)
+        
+        XCTAssertTrue(shouldHideProgress)
     }
 }

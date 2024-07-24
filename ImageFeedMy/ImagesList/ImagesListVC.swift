@@ -120,6 +120,10 @@ extension ImagesListVC: TableProtocols {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let testMode = ProcessInfo.processInfo.arguments.contains("TestMode")
+        if testMode {
+            return
+        }
         if indexPath.row != tableView.indexPathForSelectedRow?.last {
             ImagesListService.shared.fetchPhotosNextPage { [weak self] result in
                 guard let self else { return }

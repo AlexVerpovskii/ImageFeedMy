@@ -78,6 +78,9 @@ final class AuthVC: UIViewController {
         guard let authPresenter else { return }
         let webViewVC = WebViewVC()
         webViewVC.webViewVCDelegate = authPresenter
+        let webViewPresenter = WebViewPresenter()
+        webViewVC.webViewPresenter = webViewPresenter
+        webViewPresenter.view = webViewVC
         navigationController?.pushViewController(webViewVC, animated: true)
         navigationController?.modalPresentationStyle = .fullScreen
     }
